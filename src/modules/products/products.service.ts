@@ -53,3 +53,14 @@ export async function getProductByIdAsync(id: string): Promise<NewProduct> {
   return toNewProduct(product);
 }
 
+export async function deleteProductAsync(id: string): Promise<void> {
+  const existent = await prisma.product.findUnique({
+    where: { id: id },
+  });
+  if (!existent) {
+    throw new NotFoundError("Producto no encontrado");
+  }
+  await prisma.product.delete({
+    where: { id: id },
+  });
+}
