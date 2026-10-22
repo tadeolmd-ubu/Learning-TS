@@ -1,7 +1,8 @@
 import { prisma } from "../../lib/client.prisma.js";
+import type { Prisma } from "../../generated/prisma/client.js";
 import { toNewProduct } from "./products.mapper.js";
 import { NotFoundError } from "../../lib/errors.js";
-import type { CreateProduct, UpdateProduct } from "./products.validator.js";
+import type { CreateProduct, UpdateProduct, ListProductQuery } from "./products.validator.js";
 
 export type NewProduct = ReturnType<typeof toNewProduct>;
 
@@ -36,11 +37,36 @@ export async function updateProductAsync(
   return toNewProduct(updatedProduct);
 }
 
-export async function getProductsAsync(): Promise<NewProduct[]> {
-  const products = await prisma.product.findMany({
-    orderBy: { createdAt: "desc" },
-  });
-  return products.map(toNewProduct);
+export async function getProductsAsync(
+  query: ListProductQuery,
+): Promise<{ items: NewProduct[]; total: number }> {
+  const conditions: Prisma.ProductWhereInput[] = [];
+
+  if (query.name !== undefined) {
+    conditions.push({ name: { contains: query.name, mode: "insensitive" } });
+  }
+
+  if (query.minPrice !== undefined || query.maxPrice !== undefined) {
+    conditions.push({
+      price: {
+        ...(query.minPrice !== undefined ? { gte: query.minPrice } : {}),
+        ...(query.maxPrice !== undefined ? { lte: query.maxPrice } : {}),
+      },
+    });
+  }
+
+  if (query.inStock !== undefined) {
+    conditions.push({ stock: query.inStock ? { gt: 0 } : { lte: 0 } });
+  }
+
+  const where: Prisma.ProductWhereInput = { AND: conditions };
+
+  const [products, total] = await prisma.$transaction([
+    prisma.product.findMany({ where, orderBy: { createdAt: "desc" } }),
+    prisma.product.count({ where }),
+  ]);
+
+  return { items: products.map(toNewProduct), total };
 }
 
 export async function getProductByIdAsync(id: string): Promise<NewProduct> {
