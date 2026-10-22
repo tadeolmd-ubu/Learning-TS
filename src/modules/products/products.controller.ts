@@ -4,10 +4,20 @@ import {
   createProductSchema,
   updateProductSchema,
   idParamSchema,
+  listProductsQuerySchema
 } from "./products.validator.js";
 
-export async function list(_req: Request, res: Response) {
-  res.json(await service.getProductsAsync());
+export async function list(req: Request, res: Response) {
+  const query = listProductsQuerySchema.parse(req.query);
+  const { items, total } = await service.getProductsAsync(query);
+  res.json({
+    data: items,
+    meta: {
+      total,
+      count: items.length,
+      filters: query,
+    },
+  });
 }
 export async function getById(req: Request, res: Response) {
   const id = idParamSchema.parse(req.params.id);
