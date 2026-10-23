@@ -15,6 +15,9 @@ export async function list(req: Request, res: Response) {
     meta: {
       total,
       count: items.length,
+      page: query.page,
+      limit: query.limit,
+      totalPages: Math.ceil(total / query.limit),
       filters: query,
     },
   });

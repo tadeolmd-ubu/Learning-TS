@@ -2,7 +2,11 @@ import { prisma } from "../../lib/client.prisma.js";
 import type { Prisma } from "../../generated/prisma/client.js";
 import { toNewProduct } from "./products.mapper.js";
 import { NotFoundError } from "../../lib/errors.js";
-import type { CreateProduct, UpdateProduct, ListProductQuery } from "./products.validator.js";
+import type {
+  CreateProduct,
+  UpdateProduct,
+  ListProductQuery,
+} from "./products.validator.js";
 
 export type NewProduct = ReturnType<typeof toNewProduct>;
 
@@ -40,29 +44,40 @@ export async function updateProductAsync(
 export async function getProductsAsync(
   query: ListProductQuery,
 ): Promise<{ items: NewProduct[]; total: number }> {
+  const { name, minPrice, maxPrice, inStock, page, limit, sortBy, order } =
+    query;
   const conditions: Prisma.ProductWhereInput[] = [];
 
-  if (query.name !== undefined) {
-    conditions.push({ name: { contains: query.name, mode: "insensitive" } });
+  if (name !== undefined) {
+    conditions.push({ name: { contains: name, mode: "insensitive" } });
   }
 
-  if (query.minPrice !== undefined || query.maxPrice !== undefined) {
+  if (minPrice !== undefined || maxPrice !== undefined) {
     conditions.push({
       price: {
-        ...(query.minPrice !== undefined ? { gte: query.minPrice } : {}),
-        ...(query.maxPrice !== undefined ? { lte: query.maxPrice } : {}),
+        ...(minPrice !== undefined ? { gte: minPrice } : {}),
+        ...(maxPrice !== undefined ? { lte: maxPrice } : {}),
       },
     });
   }
 
-  if (query.inStock !== undefined) {
-    conditions.push({ stock: query.inStock ? { gt: 0 } : { lte: 0 } });
+  if (inStock !== undefined) {
+    conditions.push({ stock: inStock ? { gt: 0 } : { lte: 0 } });
   }
 
-  const where: Prisma.ProductWhereInput = { AND: conditions };
+  const where: Prisma.ProductWhereInput =
+    conditions.length > 0 ? { AND: conditions } : {};
+
+  const skip = (page - 1) * limit;
+  const take = limit;
 
   const [products, total] = await prisma.$transaction([
-    prisma.product.findMany({ where, orderBy: { createdAt: "desc" } }),
+    prisma.product.findMany({
+      where,
+      orderBy: [{ [sortBy]: order }, { id: "asc" }],
+      skip,
+      take,
+    }),
     prisma.product.count({ where }),
   ]);
 
