@@ -20,6 +20,10 @@ export const listProductsQuerySchema = z
     minPrice: priceSchema.optional(),
     maxPrice: priceSchema.optional(),
     inStock: z.enum(["true", "false"]).transform((val) => val === "true").optional(),
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+    sortBy: z.enum(["name", "price", "id", "stock"]).default("name"),
+    order: z.enum(["asc", "desc"]).default("asc")
   })
   .superRefine((query, ctx) => {
     if (query.minPrice !== undefined && query.maxPrice !== undefined && query.minPrice > query.maxPrice) {
