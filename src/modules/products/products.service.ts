@@ -44,12 +44,12 @@ export async function updateProductAsync(
 export async function getProductsAsync(
   query: ListProductQuery,
 ): Promise<{ items: NewProduct[]; total: number }> {
-  const { name, minPrice, maxPrice, inStock, page, limit, sortBy, order } =
+  const { search, minPrice, maxPrice, inStock, page, limit, sortBy, order } =
     query;
   const conditions: Prisma.ProductWhereInput[] = [];
 
-  if (name !== undefined) {
-    conditions.push({ name: { contains: name, mode: "insensitive" } });
+  if (search !== undefined) {
+    conditions.push({ name: { contains: search, mode: "insensitive" } });
   }
 
   if (minPrice !== undefined || maxPrice !== undefined) {
