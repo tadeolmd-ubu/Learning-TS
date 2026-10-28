@@ -23,7 +23,7 @@ export async function list(req: Request, res: Response) {
   });
 }
 export async function getById(req: Request, res: Response) {
-  const id = idParamSchema.parse(req.params.id);
+  const { id } = idParamSchema.parse({ id: req.params.id });
   res.json(await service.getProductByIdAsync(id));
 }
 
@@ -33,13 +33,13 @@ export async function createProduct(req: Request, res: Response) {
 }
 
 export async function updateProduct(req: Request, res: Response) {
-  const id = idParamSchema.parse(req.params.id);
+  const { id } = idParamSchema.parse({ id: req.params.id });
   const input = updateProductSchema.parse(req.body);
   res.json(await service.updateProductAsync(id, input));
 }
 
 export async function deleteProduct(req: Request, res: Response) {
-  const id = idParamSchema.parse(req.params.id);
+  const { id } = idParamSchema.parse({ id: req.params.id });
   await service.deleteProductAsync(id);
   res.status(204).end();
 }

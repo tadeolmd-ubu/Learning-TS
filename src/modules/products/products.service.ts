@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/client.prisma.js";
 import type { Prisma } from "../../generated/prisma/client.js";
 import { toNewProduct } from "./products.mapper.js";
-import { NotFoundError } from "../../lib/errors.js";
+import { AppError } from "../../lib/errors.js";
 import type {
   CreateProduct,
   UpdateProduct,
@@ -15,6 +15,7 @@ export async function createProductAsync(
 ): Promise<NewProduct> {
   const newProduct = await prisma.product.create({
     data: {
+      sku: input.sku,
       name: input.name,
       price: input.price,
       stock: input.stock,
@@ -28,12 +29,6 @@ export async function updateProductAsync(
   id: string,
   input: UpdateProduct,
 ): Promise<NewProduct> {
-  const existent = await prisma.product.findUnique({
-    where: { id: id },
-  });
-  if (!existent) {
-    throw new NotFoundError("Producto no encontrado");
-  }
   const updatedProduct = await prisma.product.update({
     where: { id: id },
     data: input,
@@ -49,7 +44,12 @@ export async function getProductsAsync(
   const conditions: Prisma.ProductWhereInput[] = [];
 
   if (search !== undefined) {
-    conditions.push({ name: { contains: search, mode: "insensitive" } });
+    conditions.push({
+      OR: [
+        { name: { contains: search, mode: "insensitive" } },
+        { sku: { contains: search, mode: "insensitive" } },
+      ],
+    });
   }
 
   if (minPrice !== undefined || maxPrice !== undefined) {
@@ -89,18 +89,12 @@ export async function getProductByIdAsync(id: string): Promise<NewProduct> {
     where: { id: id },
   });
   if (!product) {
-    throw new NotFoundError("Producto no encontrado");
+   throw new AppError("PRODUCT_NOT_FOUND", 404, "Producto no encontrado");
   }
   return toNewProduct(product);
 }
 
 export async function deleteProductAsync(id: string): Promise<void> {
-  const existent = await prisma.product.findUnique({
-    where: { id: id },
-  });
-  if (!existent) {
-    throw new NotFoundError("Producto no encontrado");
-  }
   await prisma.product.delete({
     where: { id: id },
   });

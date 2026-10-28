@@ -16,7 +16,7 @@ export async function list(req, res) {
     });
 }
 export async function getById(req, res) {
-    const id = idParamSchema.parse(req.params.id);
+    const { id } = idParamSchema.parse({ id: req.params.id });
     res.json(await service.getProductByIdAsync(id));
 }
 export async function createProduct(req, res) {
@@ -24,12 +24,12 @@ export async function createProduct(req, res) {
     res.status(201).json(await service.createProductAsync(input));
 }
 export async function updateProduct(req, res) {
-    const id = idParamSchema.parse(req.params.id);
+    const { id } = idParamSchema.parse({ id: req.params.id });
     const input = updateProductSchema.parse(req.body);
     res.json(await service.updateProductAsync(id, input));
 }
 export async function deleteProduct(req, res) {
-    const id = idParamSchema.parse(req.params.id);
+    const { id } = idParamSchema.parse({ id: req.params.id });
     await service.deleteProductAsync(id);
     res.status(204).end();
 }

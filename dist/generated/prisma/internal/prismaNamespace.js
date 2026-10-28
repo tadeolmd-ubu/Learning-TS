@@ -88,6 +88,7 @@ export const UserScalarFieldEnum = {
 };
 export const ProductScalarFieldEnum = {
     id: 'id',
+    sku: 'sku',
     name: 'name',
     price: 'price',
     stock: 'stock',

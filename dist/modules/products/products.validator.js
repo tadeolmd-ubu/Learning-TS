@@ -1,6 +1,14 @@
 import * as z from "zod";
-export const idParamSchema = z.uuid();
+export const idParamSchema = z.strictObject({ id: z.uuid() });
+export const skuSchema = z
+    .string()
+    .trim()
+    .min(3)
+    .max(64)
+    .regex(/^[A-Za-z0-9-]+$/, "El SKU solo admite letras, números y guiones")
+    .transform((value) => value.toUpperCase());
 export const createProductSchema = z.strictObject({
+    sku: skuSchema,
     name: z.string().trim().min(1),
     price: z.number().positive(),
     stock: z.int().min(0),
@@ -18,7 +26,7 @@ export const listProductsQuerySchema = z
     inStock: z.enum(["true", "false"]).transform((val) => val === "true").optional(),
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(10),
-    sortBy: z.enum(["name", "price", "createdAt", "stock"]).default("name"),
+    sortBy: z.enum(["name", "price", "createdAt", "stock", "sku"]).default("name"),
     order: z.enum(["asc", "desc"]).default("asc")
 })
     .superRefine((query, ctx) => {
