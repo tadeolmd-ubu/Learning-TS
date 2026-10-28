@@ -1,13 +1,26 @@
-export class AppError extends Error {
-  constructor(message: string, public status: number) {
-    super(message);
-    this.name = new.target.name;   // "NotFoundError" en el stack
-  }
-}
-export class NotFoundError extends AppError {
-  constructor(message = "Recurso no encontrado") { super(message, 404); }
-}
+export type AppErrorCode =
+  | "PRODUCT_NOT_FOUND"
+  | "VALIDATION_ERROR"
+  | "DUPLICATE_PRODUCT"
+  | "ROUTE_NOT_FOUND"
+  | "INTERNAL_ERROR"
+  | "CONFLICT"
+  | "INVALID_JSON";
 
-export class ConflictError extends AppError {
-  constructor(message = "Conflicto") { super(message, 409); }
+export type ErrorDetail = {
+  field: string;
+  message: string;
+};
+
+export class AppError extends Error {
+  constructor(
+    public readonly code: AppErrorCode,
+    public readonly statusCode: number,
+    message: string,
+    public readonly details?: ErrorDetail[],
+    options?: ErrorOptions,
+  ) {
+    super(message, options);
+    this.name = new.target.name;
+  }
 }

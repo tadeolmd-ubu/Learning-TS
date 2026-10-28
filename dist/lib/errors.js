@@ -1,14 +1,12 @@
 export class AppError extends Error {
-    status;
-    constructor(message, status) {
-        super(message);
-        this.status = status;
-        this.name = new.target.name; // "NotFoundError" en el stack
+    code;
+    statusCode;
+    details;
+    constructor(code, statusCode, message, details, options) {
+        super(message, options);
+        this.code = code;
+        this.statusCode = statusCode;
+        this.details = details;
+        this.name = new.target.name;
     }
-}
-export class NotFoundError extends AppError {
-    constructor(message = "Recurso no encontrado") { super(message, 404); }
-}
-export class ConflictError extends AppError {
-    constructor(message = "Conflicto") { super(message, 409); }
 }
