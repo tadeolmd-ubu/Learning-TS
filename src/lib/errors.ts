@@ -5,7 +5,9 @@ export type AppErrorCode =
   | "ROUTE_NOT_FOUND"
   | "INTERNAL_ERROR"
   | "CONFLICT"
-  | "INVALID_JSON";
+  | "INVALID_JSON"
+  | "CATEGORY_NOT_FOUND"
+  | "CATEGORY_HAS_PRDUCTS";
 
 export type ErrorDetail = {
   field: string;
