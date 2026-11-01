@@ -1,12 +1,12 @@
 import { prisma } from "../../lib/client.prisma.js";
 import type { Prisma } from "../../generated/prisma/client.js";
-import { toNewCategory } from "./categorys.mapper.js";
+import { toNewCategory } from "./categories.mapper.js";
 import { AppError } from "../../lib/errors.js";
 import type {
   CreateCategory,
   UpdateCategory,
   ListCategoriesQuery,
-} from "./categorys.validator.js";
+} from "./categories.validator.js";
 
 export type NewCategory = ReturnType<typeof toNewCategory>;
 
