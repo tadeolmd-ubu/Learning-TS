@@ -71,7 +71,7 @@ export async function getCategoriesAsync(
   return { items: categories.map(toNewCategory), total };
 }
 
-export async function getCategoryByIdAsync(id: string) {
+export async function getCategoryByIdAsync(id: string): Promise<NewCategory> {
   const category = await prisma.category.findUnique({ where: { id: id } });
 
   if (!category) {
