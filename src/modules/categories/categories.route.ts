@@ -7,4 +7,4 @@ categoriesRouter.get("/", controller.list);
 categoriesRouter.post("/", controller.createCategory);
 categoriesRouter.get("/:id", controller.getById);
 categoriesRouter.patch("/:id", controller.updateCategory);
-categoriesRouter.delete("/id", controller.deleteCategory)
+categoriesRouter.delete("/:id", controller.deleteCategory)
