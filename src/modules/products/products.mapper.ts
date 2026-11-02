@@ -1,6 +1,8 @@
 import type { Product } from "../../generated/prisma/client.js";
+import type { Category } from "../../generated/prisma/client.js";
 
-export function toNewProduct(p: Product) {
+
+export function toNewProduct(p: Product & {category? : Category}) {
   return {
     id: p.id,
     sku: p.sku,
@@ -9,6 +11,8 @@ export function toNewProduct(p: Product) {
     stock: p.stock,
     createdAt: p.createdAt,
     updateAt: p.updateAt,
+    categoryId : p.categoryId,
+    category: p.category
   };
 }
 

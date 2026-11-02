@@ -68,7 +68,8 @@ export const JsonNull = runtime.JsonNull;
 export const AnyNull = runtime.AnyNull;
 export const ModelName = {
     User: 'User',
-    Product: 'Product'
+    Product: 'Product',
+    Category: 'Category'
 };
 /**
  * Enums
@@ -92,8 +93,15 @@ export const ProductScalarFieldEnum = {
     name: 'name',
     price: 'price',
     stock: 'stock',
+    categoryId: 'categoryId',
     createdAt: 'createdAt',
     updateAt: 'updateAt'
+};
+export const CategoryScalarFieldEnum = {
+    id: 'id',
+    name: 'name',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
 };
 export const SortOrder = {
     asc: 'asc',
