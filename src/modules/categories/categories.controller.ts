@@ -3,7 +3,7 @@ import * as service from "./categories.service.js";
 import {
   createCategorySchema,
   updateCategorySchema,
-  idSchema,
+  idParamSchema,
   listCategorysQuerySchema,
 } from "./categories.validator.js";
 
@@ -24,7 +24,7 @@ export async function list(req: Request, res: Response) {
 }
 
 export async function getById(req: Request, res: Response) {
-  const { id } = idSchema.parse({ id: req.params.id });
+  const { id } = idParamSchema.parse({ id: req.params.id });
   return res.json(await service.getCategoryByIdAsync(id));
 }
 
@@ -33,14 +33,14 @@ export async function createCategory(req: Request, res: Response) {
   return res.status(201).json(await service.createCategoryAsync(input));
 }
 export async function updateCategory(req: Request, res: Response) {
-  const { id } = idSchema.parse({ id: req.params.id });
+  const { id } = idParamSchema.parse({ id: req.params.id });
   const input = updateCategorySchema.parse(req.body);
 
   return res.json(await service.updateCategoryAsync(id, input));
 }
 
 export async function deleteCategory(req: Request, res: Response) {
-  const { id } = idSchema.parse({ id: req.params.id });
+  const { id } = idParamSchema.parse({ id: req.params.id });
   await service.deleteCategoryAsync(id);
   return res.status(204).end();
 }

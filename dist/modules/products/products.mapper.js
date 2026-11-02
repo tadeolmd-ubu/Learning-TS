@@ -7,5 +7,7 @@ export function toNewProduct(p) {
         stock: p.stock,
         createdAt: p.createdAt,
         updateAt: p.updateAt,
+        categoryId: p.categoryId,
+        category: p.category
     };
 }

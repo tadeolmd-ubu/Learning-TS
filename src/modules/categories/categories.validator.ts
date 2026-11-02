@@ -8,7 +8,7 @@ export const updateCategorySchema = createCategorySchema
   .partial()
   .refine((o) => Object.keys(o).length > 0, { message: "Cuerpo vacio" });
 
-export const idSchema = z.strictObject({ id: z.uuid() });
+export const idParamSchema = z.strictObject({ id: z.uuid() });
 
 export const listCategorysQuerySchema = z.strictObject({
   search: z.string().trim().min(1).optional(),

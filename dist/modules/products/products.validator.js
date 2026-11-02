@@ -12,6 +12,7 @@ export const createProductSchema = z.strictObject({
     name: z.string().trim().min(1),
     price: z.number().positive(),
     stock: z.int().min(0),
+    categoryId: z.uuid()
 });
 export const updateProductSchema = createProductSchema
     .partial()
@@ -23,10 +24,11 @@ export const listProductsQuerySchema = z
     search: z.string().trim().min(1).max(100).optional(),
     minPrice: priceSchema.optional(),
     maxPrice: priceSchema.optional(),
+    categoryId: z.uuid().optional(),
     inStock: z.enum(["true", "false"]).transform((val) => val === "true").optional(),
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(10),
-    sortBy: z.enum(["name", "price", "createdAt", "stock", "sku"]).default("name"),
+    sortBy: z.enum(["name", "price", "createdAt", "stock", "sku", "categoryId"]).default("name"),
     order: z.enum(["asc", "desc"]).default("asc")
 })
     .superRefine((query, ctx) => {
