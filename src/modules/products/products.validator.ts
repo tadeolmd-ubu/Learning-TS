@@ -3,7 +3,7 @@ import * as z from "zod";
 export const idParamSchema = z.strictObject({ id: z.uuid() });
 
 const MAX_PRICE = 99_999_999.99;
-
+const MAX_STOCK = 2_147_483_647;
 
 const productPriceSchema = z
   .number()
@@ -31,7 +31,7 @@ export const createProductSchema = z.strictObject({
   sku: skuSchema,
   name: z.string().trim().min(1),
   price: productPriceSchema,
-  stock: z.int().min(0),
+  stock: z.int().min(0).max(MAX_STOCK),
   categoryId: z.uuid(),
 });
 
