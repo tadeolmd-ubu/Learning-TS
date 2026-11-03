@@ -72,11 +72,30 @@ export function errorHandler(
     switch (err.code) {
       case "P2025": {
         // registro no encontrado (carrera en update/delete)
+
+        const modelName = err.meta?.modelName;
+
+        if (modelName === "Category") {
+          return sendError(
+            res,
+            404,
+            "CATEGORY_NOT_FOUND",
+            "No se encontro la categoria",
+          );
+        }
+        if (modelName === "Product") {
+          return sendError(
+            res,
+            404,
+            "PRODUCT_NOT_FOUND",
+            "No se encontro el producto",
+          );
+        }
         return sendError(
           res,
           404,
-          "PRODUCT_NOT_FOUND",
-          "Producto no encontrado",
+          "RESOURCE_NOT_FOUND",
+          "Recurso no encontrado",
         );
       }
 
