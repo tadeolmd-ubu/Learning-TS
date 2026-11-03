@@ -109,6 +109,14 @@ export function errorHandler(
             "Ya existe un producto con ese SKU",
           );
         }
+        if (target.includes("category")){
+          return sendError(
+            res,
+            409,
+            "DUPLICATE_CATEGORY",
+            "El nombre de la categoria ya existe"
+          )
+        }
         return sendError(
           res,
           409,
