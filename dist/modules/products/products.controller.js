@@ -2,15 +2,15 @@ import * as service from "./products.service.js";
 import { createProductSchema, updateProductSchema, idParamSchema, listProductsQuerySchema } from "./products.validator.js";
 export async function list(req, res) {
     const query = listProductsQuerySchema.parse(req.query);
-    const { items, total } = await service.getProductsAsync(query);
+    const { items, total: totalItems } = await service.getProductsAsync(query);
     res.json({
         data: items,
         meta: {
-            total,
+            totalItems,
             count: items.length,
             page: query.page,
             limit: query.limit,
-            totalPages: Math.ceil(total / query.limit),
+            totalPages: Math.ceil(totalItems / query.limit),
             filters: query,
         },
     });

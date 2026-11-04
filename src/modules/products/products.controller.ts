@@ -9,15 +9,15 @@ import {
 
 export async function list(req: Request, res: Response) {
   const query = listProductsQuerySchema.parse(req.query);
-  const { items, total } = await service.getProductsAsync(query);
+const { items, total: totalItems } = await service.getProductsAsync(query);
   res.json({
     data: items,
     meta: {
-      total,
+      totalItems,
       count: items.length,
       page: query.page,
       limit: query.limit,
-      totalPages: Math.ceil(total / query.limit),
+      totalPages: Math.ceil(totalItems / query.limit),
       filters: query,
     },
   });

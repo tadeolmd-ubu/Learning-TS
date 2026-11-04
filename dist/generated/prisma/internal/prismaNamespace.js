@@ -95,7 +95,7 @@ export const ProductScalarFieldEnum = {
     stock: 'stock',
     categoryId: 'categoryId',
     createdAt: 'createdAt',
-    updateAt: 'updateAt'
+    updatedAt: 'updatedAt'
 };
 export const CategoryScalarFieldEnum = {
     id: 'id',

@@ -1,6 +1,6 @@
 import * as z from "zod";
 export const createCategorySchema = z.strictObject({
-    name: z.string().trim().min(1),
+    name: z.string().trim().min(1).max(100),
 });
 export const updateCategorySchema = createCategorySchema
     .partial()

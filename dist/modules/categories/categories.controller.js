@@ -2,15 +2,15 @@ import * as service from "./categories.service.js";
 import { createCategorySchema, updateCategorySchema, idParamSchema, listCategorysQuerySchema, } from "./categories.validator.js";
 export async function list(req, res) {
     const query = listCategorysQuerySchema.parse(req.query);
-    const { items, total } = await service.getCategoriesAsync(query);
+    const { items, total: totalItems } = await service.getCategoriesAsync(query);
     return res.json({
         data: items,
         meta: {
-            total,
+            totalItems,
             count: items.length,
             page: query.page,
             limit: query.limit,
-            totalPages: Math.ceil(total / query.limit),
+            totalPages: Math.ceil(totalItems / query.limit),
             filters: query,
         },
     });

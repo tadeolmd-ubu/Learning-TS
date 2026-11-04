@@ -39,17 +39,38 @@ export function errorHandler(err, req, res, next) {
         switch (err.code) {
             case "P2025": {
                 // registro no encontrado (carrera en update/delete)
-                return sendError(res, 404, "PRODUCT_NOT_FOUND", "Producto no encontrado");
+                const modelName = err.meta?.modelName;
+                if (modelName === "Category") {
+                    return sendError(res, 404, "CATEGORY_NOT_FOUND", "No se encontro la categoria");
+                }
+                if (modelName === "Product") {
+                    return sendError(res, 404, "PRODUCT_NOT_FOUND", "No se encontro el producto");
+                }
+                return sendError(res, 404, "RESOURCE_NOT_FOUND", "Recurso no encontrado");
             }
             case "P2002": {
                 const target = uniqueTarget(err.meta);
                 if (target.includes("sku")) {
                     return sendError(res, 409, "DUPLICATE_PRODUCT", "Ya existe un producto con ese SKU");
                 }
+                if (target.includes("category")) {
+                    return sendError(res, 409, "DUPLICATE_CATEGORY", "El nombre de la categoria ya existe");
+                }
                 return sendError(res, 409, "CONFLICT", "La operación entra en conflicto con un registro existente");
             }
+            case "P2000":
+                return sendError(res, 400, "VALIDATION_ERROR", "Valor demasiado largo");
             case "P2003":
+                const modelName = err.meta?.modelName;
+                if (modelName === "Product") {
+                    return sendError(res, 404, "CATEGORY_NOT_FOUND", "Categoria no encontrada");
+                }
+                if (modelName === "Category") {
+                    return sendError(res, 409, "CATEGORY_HAS_PRODUCTS", "La categoria tiene productos asociados");
+                }
                 return sendError(res, 409, "CONFLICT", "La operación entra en conflicto con otros registros");
+            case "P2020":
+                return sendError(res, 400, "VALIDATION_ERROR", "Error de validacion");
         }
     }
     // 5) Todo lo demás → 500. El detalle técnico solo va al log del servidor.
