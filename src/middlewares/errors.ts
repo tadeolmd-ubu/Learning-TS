@@ -109,13 +109,13 @@ export function errorHandler(
             "Ya existe un producto con ese SKU",
           );
         }
-        if (target.includes("category")){
+        if (target.includes("category")) {
           return sendError(
             res,
             409,
             "DUPLICATE_CATEGORY",
-            "El nombre de la categoria ya existe"
-          )
+            "El nombre de la categoria ya existe",
+          );
         }
         return sendError(
           res,
@@ -124,13 +124,39 @@ export function errorHandler(
           "La operación entra en conflicto con un registro existente",
         );
       }
+      case "P2000":
+        return sendError(res, 400, "VALIDATION_ERROR", "Valor demasiado largo");
       case "P2003":
+        const modelName = err.meta?.modelName;
+        if (modelName === "Product") {
+          return sendError(
+            res,
+            404,
+            "CATEGORY_NOT_FOUND",
+            "Categoria no encontrada",
+          );
+        }
+        if (modelName === "Category") {
+          return sendError(
+            res,
+            409,
+            "CATEGORY_HAS_PRODUCTS",
+            "La categoria tiene productos asociados",
+          );
+        }
         return sendError(
           res,
           409,
           "CONFLICT",
           "La operación entra en conflicto con otros registros",
         );
+        case "P2020":
+          return sendError(
+            res,
+            400,
+            "VALIDATION_ERROR",
+            "Error de validacion"
+          )
     }
   }
 
