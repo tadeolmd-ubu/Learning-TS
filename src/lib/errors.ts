@@ -7,7 +7,9 @@ export type AppErrorCode =
   | "CONFLICT"
   | "INVALID_JSON"
   | "CATEGORY_NOT_FOUND"
-  | "CATEGORY_HAS_PRODUCTS";
+  | "CATEGORY_HAS_PRODUCTS"
+  | "RESOURCE_NOT_FOUND"
+  | "DUPLICATE_CATEGORY";
 
 export type ErrorDetail = {
   field: string;

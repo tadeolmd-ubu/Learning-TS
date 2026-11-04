@@ -9,15 +9,15 @@ import {
 
 export async function list(req: Request, res: Response) {
   const query = listCategorysQuerySchema.parse(req.query);
-  const { items, total } = await service.getCategoriesAsync(query);
+  const { items, total: totalItems } = await service.getCategoriesAsync(query);
   return res.json({
     data: items,
     meta: {
-      total,
+      totalItems,
       count: items.length,
       page: query.page,
       limit: query.limit,
-      totalPages: Math.ceil(total / query.limit),
+      totalPages: Math.ceil(totalItems / query.limit),
       filters: query,
     },
   });

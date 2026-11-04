@@ -115,6 +115,7 @@ export async function getProductsAsync(
       orderBy: [{ [sortBy]: order }, { id: "asc" }],
       skip,
       take,
+      include: { category: true },
     }),
     prisma.product.count({ where }),
   ]);

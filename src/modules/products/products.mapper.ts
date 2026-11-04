@@ -10,7 +10,7 @@ export function toNewProduct(p: Product & {category? : Category}) {
     price: p.price.toString(), // Decimal  "1999.99"
     stock: p.stock,
     createdAt: p.createdAt,
-    updateAt: p.updateAt,
+    updatedAt: p.updatedAt,
     categoryId : p.categoryId,
     category: p.category
   };

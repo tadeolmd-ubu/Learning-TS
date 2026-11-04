@@ -68,6 +68,7 @@ export async function getProductsAsync(query) {
             orderBy: [{ [sortBy]: order }, { id: "asc" }],
             skip,
             take,
+            include: { category: true },
         }),
         prisma.product.count({ where }),
     ]);
