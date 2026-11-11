@@ -11,7 +11,6 @@ const productPriceSchema = z
   .max(MAX_PRICE)
   .multipleOf(0.01);
 
-
 const queryPriceSchema = z
   .string()
   .trim()
@@ -69,6 +68,24 @@ export const listProductsQuerySchema = z
       });
     }
   });
+
+export const createProductValidation = {
+  body: createProductSchema,
+} as const;
+
+export const updateProductValidation = {
+  params: idParamSchema,
+  body: updateProductSchema,
+} as const;
+
+export const productIdValidation = {
+  params: idParamSchema,
+} as const;
+
+export const listProductsValidation = {
+  query: listProductsQuerySchema,
+} as const;
+
 export type CreateProduct = z.infer<typeof createProductSchema>;
 export type UpdateProduct = z.infer<typeof updateProductSchema>;
 export type ListProductQuery = z.infer<typeof listProductsQuerySchema>;
