@@ -1,15 +1,19 @@
-import type { Request, Response } from "express";
 import * as service from "./products.service.js";
+import type { ValidatedHandler } from "../../middlewares/validator.js";
 import {
-  createProductSchema,
-  updateProductSchema,
-  idParamSchema,
-  listProductsQuerySchema
+  createProductValidation,
+  listProductsValidation,
+  productIdValidation,
+  updateProductValidation,
 } from "./products.validator.js";
 
-export async function list(req: Request, res: Response) {
-  const query = listProductsQuerySchema.parse(req.query);
-const { items, total: totalItems } = await service.getProductsAsync(query);
+export const list: ValidatedHandler<
+  typeof listProductsValidation
+> = async (_req, res) => {
+  const query = res.locals.validated.query;
+  const { items, total: totalItems } =
+    await service.getProductsAsync(query);
+
   res.json({
     data: items,
     meta: {
@@ -21,25 +25,42 @@ const { items, total: totalItems } = await service.getProductsAsync(query);
       filters: query,
     },
   });
-}
-export async function getById(req: Request, res: Response) {
-  const { id } = idParamSchema.parse({ id: req.params.id });
-  res.json(await service.getProductByIdAsync(id));
-}
+};
 
-export async function createProduct(req: Request, res: Response) {
-  const input = createProductSchema.parse(req.body);
-  res.status(201).json(await service.createProductAsync(input));
-}
+export const getById: ValidatedHandler<
+  typeof productIdValidation
+> = async (_req, res) => {
+  const { id } = res.locals.validated.params;
+  const product = await service.getProductByIdAsync(id);
 
-export async function updateProduct(req: Request, res: Response) {
-  const { id } = idParamSchema.parse({ id: req.params.id });
-  const input = updateProductSchema.parse(req.body);
-  res.json(await service.updateProductAsync(id, input));
-}
+  res.json(product);
+};
 
-export async function deleteProduct(req: Request, res: Response) {
-  const { id } = idParamSchema.parse({ id: req.params.id });
+export const createProduct: ValidatedHandler<
+  typeof createProductValidation
+> = async (_req, res) => {
+  const input = res.locals.validated.body;
+  const product = await service.createProductAsync(input);
+
+  res.status(201).json(product);
+};
+
+export const updateProduct: ValidatedHandler<
+  typeof updateProductValidation
+> = async (_req, res) => {
+  const { id } = res.locals.validated.params;
+  const input = res.locals.validated.body;
+  const product = await service.updateProductAsync(id, input);
+
+  res.json(product);
+};
+
+export const deleteProduct: ValidatedHandler<
+  typeof productIdValidation
+> = async (_req, res) => {
+  const { id } = res.locals.validated.params;
+
   await service.deleteProductAsync(id);
+
   res.status(204).end();
-}
+};
